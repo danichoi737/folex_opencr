@@ -69,7 +69,6 @@ void updateJointStates()
 void publishJointStates()
 {
   updateJointStates();
-  // joint_state_msg.header.stamp = ros::Time::now();
-
+  joint_state_msg.header.stamp = nh.now();
   joint_state_pub.publish(&joint_state_msg);
 }
