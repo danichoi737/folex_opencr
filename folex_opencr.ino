@@ -21,6 +21,8 @@ void setup()
   initJointState();
 
   dynamixel_driver.initialize();
+  dynamixel_driver.enable();
+  dynamixel_driver.resetPosition();
 }
 
 void loop()
