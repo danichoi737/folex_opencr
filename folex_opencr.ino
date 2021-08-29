@@ -48,14 +48,12 @@ void initJointState()
   joint_state_msg.name_length = joint_num;
   joint_state_msg.position_length = joint_num;
   joint_state_msg.velocity_length = joint_num;
-  joint_state_msg.effort_length = joint_num;
 }
 
 void updateJointStates()
 {
   static float joint_state_pos[20] = {0.0, };
   static float joint_state_vel[20] = {0.0, };
-  static float joint_state_eff[20] = {0.0, };
 
   float present_joint_position[joint_num];
   float present_joint_velocity[joint_num];
@@ -70,7 +68,6 @@ void updateJointStates()
   // Save data in JointState message
   joint_state_msg.position = joint_state_pos;
   joint_state_msg.velocity = joint_state_vel;
-  joint_state_msg.effort = joint_state_eff;
 }
 
 void publishJointStates()
