@@ -16,11 +16,16 @@ void setup()
 
   // ROS
   nh.initNode();
+
+  nh.subscribe(target_joint_sub);
+  
   nh.advertise(joint_state_pub);
 
   initJointState();
 
   dynamixel_driver.initialize();
+  dynamixel_driver.enable();
+  dynamixel_driver.resetPosition();
 }
 
 void loop()
@@ -28,6 +33,8 @@ void loop()
   publishJointStates();
 
   nh.spinOnce();
+
+  delay(1);
 }
 
 
@@ -41,14 +48,12 @@ void initJointState()
   joint_state_msg.name_length = joint_num;
   joint_state_msg.position_length = joint_num;
   joint_state_msg.velocity_length = joint_num;
-  joint_state_msg.effort_length = joint_num;
 }
 
 void updateJointStates()
 {
   static float joint_state_pos[20] = {0.0, };
   static float joint_state_vel[20] = {0.0, };
-  static float joint_state_eff[20] = {0.0, };
 
   float present_joint_position[joint_num];
   float present_joint_velocity[joint_num];
@@ -63,13 +68,21 @@ void updateJointStates()
   // Save data in JointState message
   joint_state_msg.position = joint_state_pos;
   joint_state_msg.velocity = joint_state_vel;
-  joint_state_msg.effort = joint_state_eff;
 }
 
 void publishJointStates()
 {
   updateJointStates();
-  // joint_state_msg.header.stamp = ros::Time::now();
-
+  joint_state_msg.header.stamp = nh.now();
   joint_state_pub.publish(&joint_state_msg);
+}
+
+
+void targetJointCallback(const sensor_msgs::JointState &msg)
+{
+  for (uint8_t i = 0; i < 3; i++)
+  {
+    dynamixel_driver.writeValueGoalVelocity(i, msg.velocity[i]);
+    dynamixel_driver.writeValueGoalPosition(i, msg.position[i]);
+  }
 }
