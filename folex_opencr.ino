@@ -85,6 +85,7 @@ void targetJointCallback(const sensor_msgs::JointState &msg)
 {
   for (uint8_t i = 0; i < 3; i++)
   {
-    // dynamixel_driver.writeValueGoalPosition(i, target_joint_msg.position[i]);
+    dynamixel_driver.writeValueGoalVelocity(i, msg.velocity[i]);
+    dynamixel_driver.writeValueGoalPosition(i, msg.position[i]);
   }
 }
