@@ -39,7 +39,6 @@ void setup()
 
   dynamixel_driver.initialize();
   dynamixel_driver.enable();
-  dynamixel_driver.resetPosition();
 }
 
 void loop()
@@ -91,10 +90,9 @@ void publishJointStates()
   joint_state_pub.publish(&joint_state_msg);
 }
 
-
 void targetJointCallback(const sensor_msgs::JointState &msg)
 {
-  for (uint8_t i = 0; i < 3; i++)
+  for (uint8_t i = 0; i < joint_num; i++)
   {
     dynamixel_driver.writeValueGoalVelocity(i, msg.velocity[i]);
     dynamixel_driver.writeValueGoalPosition(i, msg.position[i]);
