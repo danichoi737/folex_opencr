@@ -16,6 +16,9 @@ void setup()
 
   // ROS
   nh.initNode();
+
+  nh.subscribe(target_joint_sub);
+  
   nh.advertise(joint_state_pub);
 
   initJointState();
@@ -30,6 +33,8 @@ void loop()
   publishJointStates();
 
   nh.spinOnce();
+
+  delay(1);
 }
 
 
@@ -73,4 +78,13 @@ void publishJointStates()
   updateJointStates();
   joint_state_msg.header.stamp = nh.now();
   joint_state_pub.publish(&joint_state_msg);
+}
+
+
+void targetJointCallback(const sensor_msgs::JointState &msg)
+{
+  for (uint8_t i = 0; i < 3; i++)
+  {
+    // dynamixel_driver.writeValueGoalPosition(i, target_joint_msg.position[i]);
+  }
 }
