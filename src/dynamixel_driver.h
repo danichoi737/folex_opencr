@@ -46,6 +46,8 @@
 #define ADDR_AX_MOVING_SPEED      32
 #define ADDR_AX_PRESENT_POSITION  36
 #define ADDR_AX_PRESENT_SPEED     38
+// Origin degree
+#define ORIGIN_AX_DEGREE          150
 
 /* DYNAMIXEL XL430-W250-T */
 // http://emanual.robotis.com/docs/en/dxl/x/xl430-w250/#control-table
@@ -56,6 +58,8 @@
 #define ADDR_XL_PROFILE_VELOCITY  112
 #define ADDR_XL_GOAL_POSITION     116
 #define ADDR_XL_PRESENT_POSITION  132
+// Origin degree
+#define ORIGIN_XL_DEGREE          180
 
 /* POSITION LIMITS */
 // To-Do
@@ -87,6 +91,10 @@ namespace Folex
     uint32_t baudrate;
     float protocol_version;
     uint8_t joint_num = JOINT_NUM;
+
+    // DYNAMIXEL position value per degree
+    float dxl_ax_vpd = 1023.0F / 300.0F;
+    float dxl_xl_vpd = 4095.0F / 360.0F;
 
     dynamixel::PortHandler *portHandler_;
     dynamixel::PacketHandler *packetHandler_;
@@ -126,6 +134,7 @@ namespace Folex
     void resetPosition();
 
     // CONVERT FUNCTIONS
+    void convertRadianToValue(float (&data)[12]);
     float convertValueToRadian(uint8_t id, uint32_t value);
     uint16_t convertRpmToValue(uint16_t dxl_model, double rpm);
 

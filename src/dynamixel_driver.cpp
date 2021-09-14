@@ -410,6 +410,41 @@ void Folex::DynamixelDriver::resetPosition()
 ** CONVERT FUNCTIONS
 ********************************************************************/
 
+void Folex::DynamixelDriver::convertRadianToValue(float (&data)[12])
+{
+  for (uint8_t id = 0; id < joint_num; id++)
+  {
+    if (all_joint.find(id)->second == AX_12A)
+    {
+      // Reverse angle for right leg joint
+      if (id == JOINT_4 || id == JOINT_5 || id == JOINT_10 || id == JOINT_11)
+      {
+        data[id] = ((-1.0F * (data[id] * (180.0F / M_PI))) + ORIGIN_AX_DEGREE) * dxl_ax_vpd;
+      }
+      else
+      {
+        data[id] = ((data[id] * (180.0F / M_PI)) + ORIGIN_AX_DEGREE) * dxl_ax_vpd;
+      }
+    }
+    else if (all_joint.find(id)->second == XL430_W250)
+    {
+      // Reverse angle for hind hip joint
+      if (id == JOINT_6 || id == JOINT_9)
+      {
+        data[id] = ((-1.0F * (data[id] * (180.0F / M_PI))) + ORIGIN_XL_DEGREE) * dxl_xl_vpd;
+      }
+      else
+      {
+        data[id] = ((data[id] * (180.0F / M_PI)) + ORIGIN_XL_DEGREE) * dxl_xl_vpd;
+      }
+    }
+    else
+    {
+      // error
+    }
+  }
+}
+
 float Folex::DynamixelDriver::convertValueToRadian(uint8_t id, uint32_t value)
 {
   float radian = 0.0;
@@ -418,5 +453,10 @@ float Folex::DynamixelDriver::convertValueToRadian(uint8_t id, uint32_t value)
 
   return radian;
 }
+
+
+/*******************************************************************
+** INVERSE FUNCTIONS
+********************************************************************/
 
 

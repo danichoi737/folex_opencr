@@ -92,9 +92,18 @@ void publishJointStates()
 
 void targetJointCallback(const sensor_msgs::JointState &msg)
 {
+  float target_angle[12];
+
+  for (uint8_t i = 0; i < joint_num; i++)
+  {
+    target_angle[i] = msg.position[i];
+  }
+
+  dynamixel_driver.convertRadianToValue(target_angle);
+
   for (uint8_t i = 0; i < joint_num; i++)
   {
     dynamixel_driver.writeValueGoalVelocity(i, msg.velocity[i]);
-    dynamixel_driver.writeValueGoalPosition(i, msg.position[i]);
+    dynamixel_driver.writeValueGoalPosition(i, target_angle[i]);
   }
 }
